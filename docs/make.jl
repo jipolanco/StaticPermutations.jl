@@ -21,4 +21,5 @@ makedocs(;
 
 deploydocs(;
     repo="github.com/jipolanco/FastPermutations.jl.git",
+    forcepush=true,
 )
