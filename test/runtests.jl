@@ -50,6 +50,17 @@ using Test
         @test is_identity_permutation(permute_indices(perm, iperm))
     end
 
+    @testset "Relative permutation" begin
+        a = Permutation(2, 3, 1, 4)
+        b = Permutation(3, 1, 4, 2)
+        @inferred relative_permutation(a, b)
+        r = relative_permutation(a, b)
+        @test permute_indices(a, r) == b
+        np = NoPermutation()
+        @test relative_permutation(np, a) === a
+        @test relative_permutation(np, np) === np
+    end
+
     @testset "Comparisons" begin
         @test Permutation(1, 3, 2) == Permutation(1, 3, 2)
         @test Permutation(1, 3, 2) != Permutation(3, 1, 2)
