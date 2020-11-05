@@ -20,5 +20,5 @@ makedocs(;
 )
 
 deploydocs(;
-    repo="github.com/jipolanco/FastPermutations.jl",
+    repo="github.com/jipolanco/FastPermutations.jl.git",
 )
