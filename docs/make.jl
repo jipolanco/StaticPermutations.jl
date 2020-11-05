@@ -1,6 +1,9 @@
 using FastPermutations
 using Documenter
 
+DocMeta.setdocmeta!(FastPermutations, :DocTestSetup, :(using FastPermutations);
+                    recursive=true)
+
 makedocs(;
     modules=[FastPermutations],
     authors="Juan Ignacio Polanco <jipolanc@gmail.com> and contributors",
