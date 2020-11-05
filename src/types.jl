@@ -31,10 +31,10 @@ p2 = Permutation((3, 4))
 ```
 """
 struct Permutation{p,N} <: AbstractPermutation
-    Permutation(perm::Vararg{Int}) = new{perm, length(perm)}()
+    @inline Permutation(perm::Vararg{Int}) = new{perm, length(perm)}()
 end
 
-Permutation(perm::Tuple) = Permutation(perm...)
+@inline Permutation(perm::Tuple) = Permutation(perm...)
 
 Base.show(io::IO, ::Permutation{p}) where {p} = print(io, "Permutation", p)
 
@@ -46,7 +46,6 @@ Represents an identity permutation.
 It is functionally equivalent to `Permutation(1, 2, 3, ...)`, and is included
 for convenience.
 """
-struct NoPermutation <: AbstractPermutation
-end
+struct NoPermutation <: AbstractPermutation end
 
 Base.show(io::IO, ::NoPermutation) = print(io, "NoPermutation()")

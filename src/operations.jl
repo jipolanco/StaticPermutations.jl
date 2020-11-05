@@ -20,7 +20,25 @@ true
 Base.Tuple(::Permutation{p}) where {p} = p
 Base.Tuple(::NoPermutation) = nothing
 
+"""
+    length(perm::AbstractPermutation)
+
+Returns length of permutation.
+
+For `NoPermutation`, returns `nothing`.
+
+# Examples
+
+```jldoctest
+julia> length(Permutation(3, 2, 1))
+3
+
+julia> length(NoPermutation()) === nothing
+true
+```
+"""
 Base.length(::Permutation{p}) where {p} = length(p)
+Base.length(::NoPermutation) = nothing
 
 is_valid_permutation(::NoPermutation) = true
 is_valid_permutation(::Permutation{P}) where {P} = isperm(P)
@@ -127,6 +145,7 @@ relative_permutation(x::Permutation{p}, ::NoPermutation) where {p} =
     relative_permutation(x, identity_permutation(Val(length(p))))
 
 """
+    inv(p::Permutation)
     inverse_permutation(p::Permutation)
 
 Returns the inverse permutation of `p`.
@@ -154,7 +173,10 @@ true
 
 ```
 """
-inverse_permutation(x::Permutation) = relative_permutation(x, NoPermutation())
+inverse_permutation(x::AbstractPermutation) =
+    relative_permutation(x, NoPermutation())
+
+Base.inv(x::AbstractPermutation) = inverse_permutation(x)
 
 # Construct the identity permutation: (1, 2, 3, ...)
 identity_permutation(::Val{N}) where {N} = Permutation(ntuple(identity, Val(N)))
@@ -227,10 +249,7 @@ NoPermutation()
 ```
 """
 function prepend_to_permutation(::Permutation{p}, ::Val{M}) where {p, M}
-    Permutation(
-        ntuple(identity, Val(M))...,
-        ntuple(M .+ p)...,  # TODO is this inferred?
-    )
+    Permutation(ntuple(identity, Val(M))..., (M .+ p)...)
 end
 
 prepend_to_permutation(np::NoPermutation, ::Val) = np

@@ -3,13 +3,15 @@ module FastPermutations
 export Permutation, NoPermutation
 
 export
-    append_to_permutation,
-    prepend_to_permutation,
+    is_valid_permutation,
     check_permutation,
-    inverse_permutation,
-    is_identity_permutation,
     permute_indices,
-    relative_permutation
+    relative_permutation,
+    inverse_permutation,
+    identity_permutation,
+    is_identity_permutation,
+    append_to_permutation,
+    prepend_to_permutation
 
 include("types.jl")
 include("operations.jl")
