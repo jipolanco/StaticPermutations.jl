@@ -93,4 +93,14 @@ using Test
         @test append_to_permutation(NoPermutation(), Val(2)) ===
             NoPermutation()
     end
+
+    @testset "PermutedDimsArray" begin
+        x = rand(3, 5, 4)
+        @inferred PermutedDimsArray(x, perm)
+        @inferred PermutedDimsArray(x, noperm)
+
+        # Compare new and original constructors
+        @test PermutedDimsArray(x, perm) === PermutedDimsArray(x, Tuple(perm))
+        @test PermutedDimsArray(x, noperm) === PermutedDimsArray(x, (1, 2, 3))
+    end
 end

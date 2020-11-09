@@ -15,5 +15,6 @@ export
 
 include("types.jl")
 include("operations.jl")
+include("arrays.jl")
 
 end
