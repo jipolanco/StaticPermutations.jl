@@ -59,10 +59,10 @@ jobs:
         run: |
           julia --project=docs -e '
             using Documenter: doctest, DocMeta
-            using FastPermutations
-            DocMeta.setdocmeta!(FastPermutations, :DocTestSetup,
-                :(using FastPermutations); recursive=true)
-            doctest(FastPermutations)'
+            using StaticPermutations
+            DocMeta.setdocmeta!(StaticPermutations, :DocTestSetup,
+                :(using StaticPermutations); recursive=true)
+            doctest(StaticPermutations)'
       - name: Build and deploy
         run: julia --project=docs docs/make.jl
         env:

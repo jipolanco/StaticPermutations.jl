@@ -1,4 +1,4 @@
-module FastPermutations
+module StaticPermutations
 
 export Permutation, NoPermutation
 

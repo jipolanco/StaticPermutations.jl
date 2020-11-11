@@ -1,7 +1,7 @@
-using FastPermutations
+using StaticPermutations
 using Test
 
-@testset "FastPermutations.jl" begin
+@testset "StaticPermutations.jl" begin
     perm = Permutation(2, 3, 1)
     noperm = NoPermutation()
 

@@ -1,17 +1,17 @@
-using FastPermutations
+using StaticPermutations
 using Documenter
 
-DocMeta.setdocmeta!(FastPermutations, :DocTestSetup, :(using FastPermutations);
+DocMeta.setdocmeta!(StaticPermutations, :DocTestSetup, :(using StaticPermutations);
                     recursive=true)
 
 makedocs(;
-    modules=[FastPermutations],
+    modules=[StaticPermutations],
     authors="Juan Ignacio Polanco <jipolanc@gmail.com> and contributors",
-    repo="https://github.com/jipolanco/FastPermutations.jl/blob/{commit}{path}#L{line}",
-    sitename="FastPermutations.jl",
+    repo="https://github.com/jipolanco/StaticPermutations.jl/blob/{commit}{path}#L{line}",
+    sitename="StaticPermutations.jl",
     format=Documenter.HTML(;
         prettyurls=get(ENV, "CI", "false") == "true",
-        canonical="https://jipolanco.github.io/FastPermutations.jl",
+        canonical="https://jipolanco.github.io/StaticPermutations.jl",
         assets=String[],
     ),
     pages=[
@@ -20,6 +20,6 @@ makedocs(;
 )
 
 deploydocs(;
-    repo="github.com/jipolanco/FastPermutations.jl.git",
+    repo="github.com/jipolanco/StaticPermutations.jl.git",
     forcepush=true,
 )

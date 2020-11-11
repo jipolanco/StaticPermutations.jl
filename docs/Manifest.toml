@@ -19,7 +19,7 @@ git-tree-sha1 = "71e35e069daa9969b8af06cef595a1add76e0a11"
 uuid = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
 version = "0.25.3"
 
-[[FastPermutations]]
+[[StaticPermutations]]
 path = ".."
 uuid = "15972242-4b8f-49a0-b8a1-9ac0e7a1a45d"
 version = "0.1.0"

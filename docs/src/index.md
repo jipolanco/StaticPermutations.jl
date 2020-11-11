@@ -1,12 +1,12 @@
 ```@meta
-CurrentModule = FastPermutations
+CurrentModule = StaticPermutations
 ```
 
-# FastPermutations
+# StaticPermutations
 
 ```@index
 ```
 
 ```@autodocs
-Modules = [FastPermutations]
+Modules = [StaticPermutations]
 ```
