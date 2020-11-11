@@ -178,8 +178,14 @@ inverse_permutation(x::AbstractPermutation) =
 
 Base.inv(x::AbstractPermutation) = inverse_permutation(x)
 
-# Construct the identity permutation: (1, 2, 3, ...)
+"""
+    identity_permutation(::Val{N})
+    identity_permutation(A::AbstractArray{T,N})
+
+Returns the identity permutation `Permutation(1, 2, ..., N)`.
+"""
 identity_permutation(::Val{N}) where {N} = Permutation(ntuple(identity, Val(N)))
+identity_permutation(A::AbstractArray) = identity_permutation(Val(ndims(A)))
 
 """
     is_identity_permutation(p::Permutation)
