@@ -84,7 +84,7 @@ See also [`isperm`](@ref).
 
 # Examples
 
-```jldoctest
+```jldoctest; setup = :(import StaticPermutations: check_permutation)
 julia> check_permutation(Permutation(3, 2, 1))  # no error
 
 julia> check_permutation(NoPermutation())       # no error
