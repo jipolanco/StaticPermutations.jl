@@ -1,4 +1,7 @@
 using StaticPermutations
+import StaticPermutations:
+    check_permutation
+
 using Test
 
 @testset "StaticPermutations.jl" begin
@@ -26,28 +29,40 @@ using Test
     end
 
     @testset "Permutation checks" begin
-        @test is_valid_permutation(perm)
-        @test is_valid_permutation(noperm)
-        @test !is_valid_permutation(Permutation(2, 5, 3))
+        @test isperm(perm)
+        @test_deprecated is_valid_permutation(perm)
+        @test isperm(noperm)
+        @test !isperm(Permutation(2, 5, 3))
+
+        # Check that result is fully inferred
+        ispermval(p) = Val(isperm(p))
+        @inferred ispermval(perm)
+        @inferred ispermval(noperm)
+        @inferred ispermval(Permutation(2, 5, 3))
 
         @test_nowarn check_permutation(perm)
         @test_nowarn check_permutation(noperm)
         @test_throws ArgumentError check_permutation(Permutation(2, 5, 3))
     end
 
-    iperm = inverse_permutation(perm)
+    iperm = inv(perm)
     @testset "Inverse permutation" begin
-        @inferred inverse_permutation(perm)
-        @test iperm === inv(perm)
+        @test permute(perm, iperm) == NoPermutation()
+        @test invperm(perm) === iperm
+        @inferred inv(perm)
+        @test_deprecated inverse_permutation(perm)
     end
 
     @testset "Identity permutation" begin
         @inferred identity_permutation(Val(4))
         id = identity_permutation(Val(4))
         @test id === Permutation(1, 2, 3, 4)
-        @test is_identity_permutation(NoPermutation())
-        @test is_identity_permutation(id)
-        @test is_identity_permutation(permute_indices(perm, iperm))
+        @test id == NoPermutation()  # they're functionally equivalent
+        @test !isidentity(perm)
+        @test_deprecated is_identity_permutation(perm)
+        @test isidentity(NoPermutation())
+        @test isidentity(id)
+        @test isidentity(permute(perm, iperm))
     end
 
     @testset "Relative permutation" begin
@@ -55,7 +70,7 @@ using Test
         b = Permutation(3, 1, 4, 2)
         @inferred relative_permutation(a, b)
         r = relative_permutation(a, b)
-        @test permute_indices(a, r) == b
+        @test permute(a, r) == b
         np = NoPermutation()
         @test relative_permutation(np, a) === a
         @test relative_permutation(np, np) === np
@@ -74,24 +89,23 @@ using Test
     @testset "Permute indices" begin
         ind = (20, 30, 10)
         ind_perm = (30, 10, 20)
-        @test permute_indices(ind, noperm) === ind
-        @test permute_indices(ind, perm) === ind_perm
-        @test permute_indices(CartesianIndex(ind), perm) === CartesianIndex(ind_perm)
-        @inferred permute_indices(perm, iperm)
-        @test permute_indices(perm, iperm) === Permutation(1, 2, 3)
+        @test_deprecated permute_indices(ind, noperm)
+        @test permute(ind, noperm) === ind
+        @test permute(ind, perm) === ind_perm
+        @test permute(CartesianIndex(ind), perm) === CartesianIndex(ind_perm)
+        @inferred permute(perm, iperm)
+        @test permute(perm, iperm) === Permutation(1, 2, 3)
     end
 
     @testset "Prepend / append" begin
-        @inferred prepend_to_permutation(Permutation(2, 3, 1), Val(2))
-        @inferred append_to_permutation(Permutation(2, 3, 1), Val(2))
-        @test prepend_to_permutation(Permutation(2, 3, 1), Val(2)) ===
-            Permutation(1, 2, 4, 5, 3)
-        @test prepend_to_permutation(NoPermutation(), Val(2)) ===
-            NoPermutation()
-        @test append_to_permutation(Permutation(2, 3, 1), Val(2)) ===
-            Permutation(2, 3, 1, 4, 5)
-        @test append_to_permutation(NoPermutation(), Val(2)) ===
-            NoPermutation()
+        @inferred prepend(Permutation(2, 3, 1), Val(2))
+        @inferred append(Permutation(2, 3, 1), Val(2))
+        @test_deprecated prepend_to_permutation(Permutation(2, 3, 1), Val(2))
+        @test_deprecated append_to_permutation(Permutation(2, 3, 1), Val(2))
+        @test prepend(Permutation(2, 3, 1), Val(2)) === Permutation(1, 2, 4, 5, 3)
+        @test prepend(NoPermutation(), Val(2)) === NoPermutation()
+        @test append(Permutation(2, 3, 1), Val(2)) === Permutation(2, 3, 1, 4, 5)
+        @test append(NoPermutation(), Val(2)) === NoPermutation()
     end
 
     @testset "PermutedDimsArray" begin

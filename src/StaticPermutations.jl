@@ -3,15 +3,12 @@ module StaticPermutations
 export Permutation, NoPermutation
 
 export
-    is_valid_permutation,
-    check_permutation,
-    permute_indices,
+    permute,
     relative_permutation,
-    inverse_permutation,
     identity_permutation,
-    is_identity_permutation,
-    append_to_permutation,
-    prepend_to_permutation
+    isidentity,
+    append,
+    prepend
 
 include("types.jl")
 include("operations.jl")
