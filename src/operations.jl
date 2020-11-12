@@ -61,7 +61,17 @@ true
 ```
 """
 Base.isperm(::NoPermutation) = true
-Base.isperm(::Permutation{P}) where {P} = isperm(P)
+
+function Base.isperm(::Permutation{P}) where {P}
+    P :: Tuple
+    if @generated
+        # Call isperm tuple implementation in base Julia
+        pp = isperm(P)
+        :( $pp )
+    else
+        isperm(P)
+    end
+end
 
 """
     check_permutation(perm::AbstractPermutation)
