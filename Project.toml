@@ -1,7 +1,7 @@
 name = "StaticPermutations"
 uuid = "15972242-4b8f-49a0-b8a1-9ac0e7a1a45d"
 authors = ["Juan Ignacio Polanco <jipolanc@gmail.com> and contributors"]
-version = "0.1.0"
+version = "0.1.1"
 
 [compat]
 julia = "1.3"
