@@ -74,31 +74,6 @@ function Base.isperm(::Permutation{P}) where {P}
 end
 
 """
-    check_permutation(perm::AbstractPermutation)
-
-Check the validity of a `Permutation`.
-
-Throws `ArgumentError` if the permutation is invalid.
-
-See also [`isperm`](@ref).
-
-# Examples
-
-```jldoctest; setup = :(import StaticPermutations: check_permutation)
-julia> check_permutation(Permutation(3, 2, 1))  # no error
-
-julia> check_permutation(NoPermutation())       # no error
-
-julia> check_permutation(Permutation(3, 3, 1))
-ERROR: ArgumentError: invalid permutation of dimensions: Permutation(3, 3, 1)
-```
-"""
-function check_permutation(perm::AbstractPermutation)
-    isperm(perm) && return
-    throw(ArgumentError("invalid permutation of dimensions: $perm"))
-end
-
-"""
     *(p::AbstractPermutation, collection)
 
 Apply permutation to the given collection.

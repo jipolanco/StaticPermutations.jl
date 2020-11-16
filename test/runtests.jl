@@ -1,6 +1,4 @@
 using StaticPermutations
-import StaticPermutations:
-    check_permutation
 
 using Test
 
@@ -47,10 +45,6 @@ using Test
         @inferred ispermval(perm)
         @inferred ispermval(noperm)
         @inferred ispermval(Permutation(2, 5, 3))
-
-        @test_nowarn check_permutation(perm)
-        @test_nowarn check_permutation(noperm)
-        @test_throws ArgumentError check_permutation(Permutation(2, 5, 3))
     end
 
     @testset "Composition" begin
