@@ -99,34 +99,32 @@ function check_permutation(perm::AbstractPermutation)
 end
 
 """
-    permute(collection, perm::Permutation)
+    *(p::AbstractPermutation, collection)
 
-Permute collection according to the given permutation.
+Apply permutation to the given collection.
 
-The collection may be a `Tuple` or a `CartesianIndex` to be reordered.
+The collection may be a `Tuple` or a `CartesianIndex` to be reordered. If `p` is
+a [`Permutation`](@ref), the collection must have the same length as `p`.
 
 # Examples
 
 ```jldoctest
-julia> perm = Permutation(2, 3, 1);
+julia> p = Permutation(2, 3, 1);
 
-julia> permute((36, 42, 14), perm)
+julia> p * (36, 42, 14)
 (42, 14, 36)
 
-julia> permute(CartesianIndex(36, 42, 14), perm)
+julia> p * CartesianIndex(36, 42, 14)
 CartesianIndex(42, 14, 36)
 ```
 """
-function permute end
+*(::NoPermutation, t) = t
 
-@inline permute(t::Tuple, ::NoPermutation) = t
-@inline function permute(t::Tuple{Vararg{Any,N}},
-                         ::Permutation{perm,N}) where {N, perm}
-    @inbounds ntuple(i -> t[perm[i]], Val(N))
+@inline function *(::Permutation{p,N}, t::Tuple{Vararg{Any,N}}) where {N,p}
+    @inbounds ntuple(i -> t[p[i]], Val(N))
 end
 
-@inline permute(I::CartesianIndex, perm) =
-    CartesianIndex(permute(Tuple(I), perm))
+@inline *(p, I::CartesianIndex) = CartesianIndex(p * Tuple(I))
 
 """
     *(p::AbstractPermutation, q::AbstractPermutation)
@@ -155,9 +153,9 @@ julia> inv(p) * p
 Permutation(1, 2, 3)
 ```
 """
-Base.:*(p::Permutation, q::Permutation) = Permutation(permute(Tuple(q), p))
-Base.:*(::NoPermutation, q) = q
-Base.:*(p, ::NoPermutation) = p
+*(p::Permutation, q::Permutation) = Permutation(p * Tuple(q))
+*(::NoPermutation, q::AbstractPermutation) = q
+*(p, ::NoPermutation) = p
 
 """
     /(y::AbstractPermutation, x::AbstractPermutation)
@@ -179,23 +177,23 @@ julia> p * x == y
 true
 ```
 """
-function Base.:/(::Permutation{q,N}, ::Permutation{p,N}) where {p, q, N}
+function /(::Permutation{q,N}, ::Permutation{p,N}) where {p, q, N}
     if @generated
         perm = map(v -> findfirst(==(v), p)::Int, q)
-        @assert permute(p, Permutation(perm)) === q
+        @assert Permutation(perm) * p === q
         :( Permutation($perm) )
     else
         perm = map(v -> findfirst(==(v), p)::Int, q)
-        @assert permute(p, Permutation(perm)) === q
+        @assert Permutation(perm) * p === q
         Permutation(perm)
     end
 end
 
-Base.:/(y::AbstractPermutation, ::NoPermutation) = y
+/(y::AbstractPermutation, ::NoPermutation) = y
 
 # In this case, the result is the inverse permutation of `x`, such that
-# `permute(x, perm) == (1, 2, 3, ...)`.
-Base.:/(::NoPermutation, x::Permutation{p,N}) where {p,N} =
+# `perm * x == (1, 2, 3, ...)`.
+/(::NoPermutation, x::Permutation{p,N}) where {p,N} =
     identity_permutation(Val(N)) / x
 
 """
@@ -219,10 +217,10 @@ Permutation(3, 1, 2)
 
 julia> t_orig = (36, 42, 14);
 
-julia> t_perm = permute(t_orig, p)
+julia> t_perm = p * t_orig
 (42, 14, 36)
 
-julia> permute(t_perm, q) === t_orig
+julia> q * t_perm === t_orig
 true
 
 ```
@@ -264,10 +262,10 @@ function isidentity(perm::Permutation)
 end
 
 # Comparisons: (1, 2, ..., N) is considered equal to NoPermutation, for any N.
-Base.:(==)(::Permutation{p}, ::Permutation{q}) where {p, q} = p === q
-Base.:(==)(::NoPermutation, ::NoPermutation) = true
-Base.:(==)(p::Permutation, ::NoPermutation) = isidentity(p)
-Base.:(==)(np::NoPermutation, p::Permutation) = p == np
+==(::Permutation{p}, ::Permutation{q}) where {p,q} = p === q
+==(::NoPermutation, ::NoPermutation) = true
+==(p::Permutation, ::NoPermutation) = isidentity(p)
+==(np::NoPermutation, p::Permutation) = p == np
 
 """
     append(p::Permutation, ::Val{M})
@@ -319,4 +317,4 @@ prepend(np::NoPermutation, ::Val) = np
 @deprecate prepend_to_permutation prepend
 @deprecate append_to_permutation append
 @deprecate(relative_permutation(x, y), y / x)
-@deprecate(permute(p::Permutation, q::Permutation), q * p)
+@deprecate(permute(p, q), q * p)

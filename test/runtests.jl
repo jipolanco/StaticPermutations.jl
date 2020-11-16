@@ -115,9 +115,14 @@ using Test
         ind = (20, 30, 10)
         ind_perm = (30, 10, 20)
         @test_deprecated permute_indices(ind, noperm)
-        @test permute(ind, noperm) === ind
-        @test permute(ind, perm) === ind_perm
-        @test permute(CartesianIndex(ind), perm) === CartesianIndex(ind_perm)
+        permval(perm) = Val(perm * (:aaa, :bbb, :ccc))
+        @inferred permval(perm)
+        @inferred permval(iperm)
+        @inferred permval(noperm)
+        @test noperm * ind === ind
+        @test perm * ind === ind_perm
+        @test (@test_deprecated permute(ind, perm)) === ind_perm
+        @test perm * CartesianIndex(ind) === CartesianIndex(ind_perm)
         @test (@test_deprecated permute(perm, iperm)) === iperm * perm
     end
 

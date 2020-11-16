@@ -9,6 +9,8 @@ export
     append,
     prepend
 
+import Base: ==, *, /
+
 include("types.jl")
 include("operations.jl")
 include("arrays.jl")
