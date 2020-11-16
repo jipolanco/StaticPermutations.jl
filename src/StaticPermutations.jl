@@ -1,6 +1,6 @@
 module StaticPermutations
 
-export Permutation, NoPermutation
+export AbstractPermutation, Permutation, NoPermutation
 
 export
     permute,
