@@ -15,6 +15,14 @@ using Test
         @inferred NoPermutation()
     end
 
+    @testset "getindex!" begin
+        @test perm[2] == perm[Val(2)] == 3
+        @test noperm[2] == noperm[Val(2)] == 2
+        valgettwo(p) = Val(p[2])
+        @inferred valgettwo(perm)
+        @inferred valgettwo(noperm)
+    end
+
     @testset "I/O" begin
         @test string(perm) == "Permutation(2, 3, 1)"
         @test string(noperm) == "NoPermutation()"

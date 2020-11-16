@@ -36,6 +36,9 @@ end
 
 @inline Permutation(perm::Tuple) = Permutation(perm...)
 
+@inline Base.getindex(::Permutation{p}, ::Val{i}) where {p,i} = p[i]
+@inline Base.getindex(p::Permutation, i::Integer) = p[Val(i)]
+
 Base.show(io::IO, ::Permutation{p}) where {p} = print(io, "Permutation", p)
 
 """
@@ -47,5 +50,8 @@ It is functionally equivalent to `Permutation(1, 2, 3, ...)`, and is included
 for convenience.
 """
 struct NoPermutation <: AbstractPermutation end
+
+@inline Base.getindex(::NoPermutation, ::Val{i}) where {i} = i
+@inline Base.getindex(::NoPermutation, i::Integer) = i
 
 Base.show(io::IO, ::NoPermutation) = print(io, "NoPermutation()")
