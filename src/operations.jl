@@ -160,7 +160,7 @@ Base.:*(::NoPermutation, q) = q
 Base.:*(p, ::NoPermutation) = p
 
 """
-    \\(x::AbstractPermutation, y::AbstractPermutation)
+    /(y::AbstractPermutation, x::AbstractPermutation)
 
 Get relative permutation needed to get from `x` to `y`. That is, the permutation
 `p` such that `p * x == y`.
@@ -172,16 +172,16 @@ julia> x = Permutation(3, 1, 2);
 
 julia> y = Permutation(2, 1, 3);
 
-julia> p = x \\ y
+julia> p = y / x
 Permutation(3, 2, 1)
 
 julia> p * x == y
 true
 ```
 """
-function \(x::AbstractPermutation, y::AbstractPermutation) end
+function Base.:/(y::AbstractPermutation, x::AbstractPermutation) end
 
-function \(::Permutation{p,N}, ::Permutation{q,N}) where {p, q, N}
+function Base.:/(::Permutation{q,N}, ::Permutation{p,N}) where {p, q, N}
     if @generated
         perm = map(v -> findfirst(==(v), p)::Int, q)
         @assert permute(p, Permutation(perm)) === q
@@ -193,13 +193,12 @@ function \(::Permutation{p,N}, ::Permutation{q,N}) where {p, q, N}
     end
 end
 
-\(::NoPermutation, y::Permutation) = y
-\(::NoPermutation, y::NoPermutation) = y
+Base.:/(y::AbstractPermutation, ::NoPermutation) = y
 
 # In this case, the result is the inverse permutation of `x`, such that
 # `permute(x, perm) == (1, 2, 3, ...)`.
-\(x::Permutation{p,N}, ::NoPermutation) where {p,N} =
-    x \ identity_permutation(Val(N))
+Base.:/(::NoPermutation, x::Permutation{p,N}) where {p,N} =
+    identity_permutation(Val(N)) / x
 
 """
     inv(p::Permutation)
@@ -210,7 +209,7 @@ Returns the inverse permutation of `p`.
 Functionally equivalent to Julia's `invperm`, with the advantage that the result
 is a compile time constant.
 
-See also [`\\`](@ref).
+See also [`/`](@ref).
 
 # Examples
 
@@ -230,7 +229,7 @@ true
 
 ```
 """
-Base.inv(x::AbstractPermutation) = x \ NoPermutation()
+Base.inv(x::AbstractPermutation) = NoPermutation() / x
 Base.invperm(x::AbstractPermutation) = inv(x)
 
 """
@@ -321,5 +320,5 @@ prepend(np::NoPermutation, ::Val) = np
 @deprecate inverse_permutation inv
 @deprecate prepend_to_permutation prepend
 @deprecate append_to_permutation append
-@deprecate(relative_permutation(x, y), x \ y)
+@deprecate(relative_permutation(x, y), y / x)
 @deprecate(permute(p::Permutation, q::Permutation), q * p)

@@ -91,13 +91,13 @@ using Test
     @testset "Left division operator" begin
         a = Permutation(2, 3, 1, 4)
         b = Permutation(3, 1, 4, 2)
-        @inferred a \ b
-        r = a \ b
+        @inferred b / a
+        r = b / a
         @test r * a == b
         np = NoPermutation()
-        @test np \ a === a
-        @test a \ np === inv(a)
-        @test np \ np === np
+        @test a / np === a
+        @test np / a === inv(a)
+        @test np / np === np
         @test (@test_deprecated relative_permutation(a, b)) === r
     end
 

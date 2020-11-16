@@ -9,8 +9,6 @@ export
     append,
     prepend
 
-import LinearAlgebra: \
-
 include("types.jl")
 include("operations.jl")
 include("arrays.jl")
