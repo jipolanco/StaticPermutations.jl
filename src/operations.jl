@@ -179,8 +179,6 @@ julia> p * x == y
 true
 ```
 """
-function Base.:/(y::AbstractPermutation, x::AbstractPermutation) end
-
 function Base.:/(::Permutation{q,N}, ::Permutation{p,N}) where {p, q, N}
     if @generated
         perm = map(v -> findfirst(==(v), p)::Int, q)
