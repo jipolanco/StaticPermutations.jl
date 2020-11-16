@@ -10,6 +10,7 @@ export
     prepend
 
 import Base: ==, *, /
+import LinearAlgebra: \
 
 include("types.jl")
 include("operations.jl")

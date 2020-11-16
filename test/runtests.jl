@@ -2,6 +2,7 @@ using StaticPermutations
 import StaticPermutations:
     check_permutation
 
+using LinearAlgebra: \
 using Test
 
 @testset "StaticPermutations.jl" begin
@@ -60,7 +61,9 @@ using Test
         @inferred p * NoPermutation()
         @inferred NoPermutation() * p
         @test p * q === Permutation(3, 2, 1)
+        @test q === p \ Permutation(3, 2, 1)
         @test q * p === Permutation(2, 1, 3)
+        @test p === q \ Permutation(2, 1, 3)
         @test p * NoPermutation() === p
         @test NoPermutation() * p === p
         @test p * inv(p) == NoPermutation()
@@ -111,7 +114,7 @@ using Test
         @test NoPermutation() == NoPermutation()
     end
 
-    @testset "Permute indices" begin
+    @testset "Apply permutations" begin
         ind = (20, 30, 10)
         ind_perm = (30, 10, 20)
         @test_deprecated permute_indices(ind, noperm)
@@ -120,7 +123,9 @@ using Test
         @inferred permval(iperm)
         @inferred permval(noperm)
         @test noperm * ind === ind
+        @test ind === noperm \ ind
         @test perm * ind === ind_perm
+        @test ind === perm \ ind_perm
         @test (@test_deprecated permute(ind, perm)) === ind_perm
         @test perm * CartesianIndex(ind) === CartesianIndex(ind_perm)
         @test (@test_deprecated permute(perm, iperm)) === iperm * perm

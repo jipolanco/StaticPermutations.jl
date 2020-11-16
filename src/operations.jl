@@ -197,6 +197,16 @@ end
     identity_permutation(Val(N)) / x
 
 """
+    \\(p::AbstractPermutation, x)
+
+Undo permutation `p` from permuted collection `x`.
+
+In other words, apply inverse of permutation `p` to `x`. This is effectively
+equivalent to `inv(p) * x`.
+"""
+\(p::AbstractPermutation, x) = inv(p) * x
+
+"""
     inv(p::Permutation)
     invperm(p::Permutation)
 
