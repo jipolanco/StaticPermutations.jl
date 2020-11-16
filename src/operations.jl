@@ -128,8 +128,6 @@ end
 @inline permute(I::CartesianIndex, perm) =
     CartesianIndex(permute(Tuple(I), perm))
 
-@deprecate(permute(p::Permutation, q::Permutation), q * p)
-
 """
     *(p::AbstractPermutation, q::AbstractPermutation)
 
@@ -162,12 +160,10 @@ Base.:*(::NoPermutation, q) = q
 Base.:*(p, ::NoPermutation) = p
 
 """
-    relative_permutation(x::Permutation, y::Permutation)
+    \\(x::AbstractPermutation, y::AbstractPermutation)
 
-Get relative permutation needed to get from `x` to `y`.
-That is, the permutation `perm` such that `perm * x == y`.
-
-The computation is performed at compile time using generated functions.
+Get relative permutation needed to get from `x` to `y`. That is, the permutation
+`p` such that `p * x == y`.
 
 # Examples
 
@@ -176,15 +172,16 @@ julia> x = Permutation(3, 1, 2);
 
 julia> y = Permutation(2, 1, 3);
 
-julia> perm = relative_permutation(x, y)
+julia> p = x \\ y
 Permutation(3, 2, 1)
 
-julia> permute(x, perm) == y
+julia> p * x == y
 true
 ```
 """
-function relative_permutation(::Permutation{p,N},
-                              ::Permutation{q,N}) where {p, q, N}
+function \(x::AbstractPermutation, y::AbstractPermutation) end
+
+function \(::Permutation{p,N}, ::Permutation{q,N}) where {p, q, N}
     if @generated
         perm = map(v -> findfirst(==(v), p)::Int, q)
         @assert permute(p, Permutation(perm)) === q
@@ -196,14 +193,13 @@ function relative_permutation(::Permutation{p,N},
     end
 end
 
-relative_permutation(::NoPermutation, y::Permutation) = y
-relative_permutation(::NoPermutation, y::NoPermutation) = y
+\(::NoPermutation, y::Permutation) = y
+\(::NoPermutation, y::NoPermutation) = y
 
 # In this case, the result is the inverse permutation of `x`, such that
 # `permute(x, perm) == (1, 2, 3, ...)`.
-# (Same as `invperm`, which is type unstable for tuples.)
-relative_permutation(x::Permutation{p}, ::NoPermutation) where {p} =
-    relative_permutation(x, identity_permutation(Val(length(p))))
+\(x::Permutation{p,N}, ::NoPermutation) where {p,N} =
+    x \ identity_permutation(Val(N))
 
 """
     inv(p::Permutation)
@@ -214,7 +210,7 @@ Returns the inverse permutation of `p`.
 Functionally equivalent to Julia's `invperm`, with the advantage that the result
 is a compile time constant.
 
-See also [`relative_permutation`](@ref).
+See also [`\\`](@ref).
 
 # Examples
 
@@ -234,7 +230,7 @@ true
 
 ```
 """
-Base.inv(x::AbstractPermutation) = relative_permutation(x, NoPermutation())
+Base.inv(x::AbstractPermutation) = x \ NoPermutation()
 Base.invperm(x::AbstractPermutation) = inv(x)
 
 """
@@ -325,3 +321,5 @@ prepend(np::NoPermutation, ::Val) = np
 @deprecate inverse_permutation inv
 @deprecate prepend_to_permutation prepend
 @deprecate append_to_permutation append
+@deprecate(relative_permutation(x, y), x \ y)
+@deprecate(permute(p::Permutation, q::Permutation), q * p)

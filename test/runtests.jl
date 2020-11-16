@@ -88,15 +88,17 @@ using Test
         @test isidentity(perm * iperm)
     end
 
-    @testset "Relative permutation" begin
+    @testset "Left division operator" begin
         a = Permutation(2, 3, 1, 4)
         b = Permutation(3, 1, 4, 2)
-        @inferred relative_permutation(a, b)
-        r = relative_permutation(a, b)
+        @inferred a \ b
+        r = a \ b
         @test r * a == b
         np = NoPermutation()
-        @test relative_permutation(np, a) === a
-        @test relative_permutation(np, np) === np
+        @test np \ a === a
+        @test a \ np === inv(a)
+        @test np \ np === np
+        @test (@test_deprecated relative_permutation(a, b)) === r
     end
 
     @testset "Comparisons" begin

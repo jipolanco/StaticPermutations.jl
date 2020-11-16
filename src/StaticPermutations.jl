@@ -4,11 +4,12 @@ export Permutation, NoPermutation
 
 export
     permute,
-    relative_permutation,
     identity_permutation,
     isidentity,
     append,
     prepend
+
+import LinearAlgebra: \
 
 include("types.jl")
 include("operations.jl")
