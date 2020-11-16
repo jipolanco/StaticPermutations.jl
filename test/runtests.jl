@@ -2,7 +2,6 @@ using StaticPermutations
 import StaticPermutations:
     check_permutation
 
-using LinearAlgebra: \
 using Test
 
 @testset "StaticPermutations.jl" begin

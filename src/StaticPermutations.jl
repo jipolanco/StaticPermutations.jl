@@ -9,8 +9,7 @@ export
     append,
     prepend
 
-import Base: ==, *, /
-import LinearAlgebra: \
+import Base: ==, *, /, \
 
 include("types.jl")
 include("operations.jl")
