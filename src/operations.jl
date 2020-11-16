@@ -103,8 +103,7 @@ end
 
 Permute collection according to the given permutation.
 
-The collection may be a `Tuple`, a `CartesianIndex`, or a `Permutation` to be
-reordered according to `perm`.
+The collection may be a `Tuple` or a `CartesianIndex` to be reordered.
 
 # Examples
 
@@ -116,27 +115,57 @@ julia> permute((36, 42, 14), perm)
 
 julia> permute(CartesianIndex(36, 42, 14), perm)
 CartesianIndex(42, 14, 36)
-
-julia> permute(Permutation(3, 1, 2), perm)
-Permutation(1, 2, 3)
 ```
 """
+function permute end
+
 @inline permute(t::Tuple, ::NoPermutation) = t
 @inline function permute(t::Tuple{Vararg{Any,N}},
-                                 ::Permutation{perm,N}) where {N, perm}
+                         ::Permutation{perm,N}) where {N, perm}
     @inbounds ntuple(i -> t[perm[i]], Val(N))
 end
-@inline permute(::Permutation{t}, p::Permutation) where {t} =
-    Permutation(permute(t, p)...)
 
 @inline permute(I::CartesianIndex, perm) =
     CartesianIndex(permute(Tuple(I), perm))
+
+@deprecate(permute(p::Permutation, q::Permutation), q * p)
+
+"""
+    *(p::AbstractPermutation, q::AbstractPermutation)
+
+Compose two permutations: apply permutation `p` to permutation `q`.
+
+Note that permutation composition is non-commutative.
+
+# Examples
+
+```jldoctest
+julia> p = Permutation(2, 3, 1);
+
+julia> q = Permutation(1, 3, 2);
+
+julia> p * q
+Permutation(3, 2, 1)
+
+julia> q * p
+Permutation(2, 1, 3)
+
+julia> p * inv(p)
+Permutation(1, 2, 3)
+
+julia> inv(p) * p
+Permutation(1, 2, 3)
+```
+"""
+Base.:*(p::Permutation, q::Permutation) = Permutation(permute(Tuple(q), p))
+Base.:*(::NoPermutation, q) = q
+Base.:*(p, ::NoPermutation) = p
 
 """
     relative_permutation(x::Permutation, y::Permutation)
 
 Get relative permutation needed to get from `x` to `y`.
-That is, the permutation `perm` such that `permute(x, perm) == y`.
+That is, the permutation `perm` such that `perm * x == y`.
 
 The computation is performed at compile time using generated functions.
 

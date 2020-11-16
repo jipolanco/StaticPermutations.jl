@@ -53,9 +53,24 @@ using Test
         @test_throws ArgumentError check_permutation(Permutation(2, 5, 3))
     end
 
+    @testset "Composition" begin
+        p = Permutation(2, 3, 1)
+        q = Permutation(1, 3, 2)
+        @inferred p * q
+        @inferred p * NoPermutation()
+        @inferred NoPermutation() * p
+        @test p * q === Permutation(3, 2, 1)
+        @test q * p === Permutation(2, 1, 3)
+        @test p * NoPermutation() === p
+        @test NoPermutation() * p === p
+        @test p * inv(p) == NoPermutation()
+        @test inv(p) * p == NoPermutation()
+    end
+
     iperm = inv(perm)
     @testset "Inverse permutation" begin
-        @test permute(perm, iperm) == NoPermutation()
+        @test perm * iperm == NoPermutation()
+        @test iperm * perm == NoPermutation()
         @test invperm(perm) === iperm
         @inferred inv(perm)
         @test_deprecated inverse_permutation(perm)
@@ -70,7 +85,7 @@ using Test
         @test_deprecated is_identity_permutation(perm)
         @test isidentity(NoPermutation())
         @test isidentity(id)
-        @test isidentity(permute(perm, iperm))
+        @test isidentity(perm * iperm)
     end
 
     @testset "Relative permutation" begin
@@ -78,7 +93,7 @@ using Test
         b = Permutation(3, 1, 4, 2)
         @inferred relative_permutation(a, b)
         r = relative_permutation(a, b)
-        @test permute(a, r) == b
+        @test r * a == b
         np = NoPermutation()
         @test relative_permutation(np, a) === a
         @test relative_permutation(np, np) === np
@@ -101,8 +116,7 @@ using Test
         @test permute(ind, noperm) === ind
         @test permute(ind, perm) === ind_perm
         @test permute(CartesianIndex(ind), perm) === CartesianIndex(ind_perm)
-        @inferred permute(perm, iperm)
-        @test permute(perm, iperm) === Permutation(1, 2, 3)
+        @test (@test_deprecated permute(perm, iperm)) === iperm * perm
     end
 
     @testset "Prepend / append" begin
