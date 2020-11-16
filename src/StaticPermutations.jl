@@ -3,7 +3,6 @@ module StaticPermutations
 export AbstractPermutation, Permutation, NoPermutation
 
 export
-    permute,
     identity_permutation,
     isidentity,
     append,
