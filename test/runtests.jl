@@ -59,6 +59,7 @@ using Test
         @test p === q \ Permutation(2, 1, 3)
         @test p * NoPermutation() === p
         @test NoPermutation() * p === p
+        @test NoPermutation() * NoPermutation() === NoPermutation()
         @test p * inv(p) == NoPermutation()
         @test inv(p) * p == NoPermutation()
     end
@@ -121,6 +122,7 @@ using Test
         @test ind === perm \ ind_perm
         @test (@test_deprecated permute(ind, perm)) === ind_perm
         @test perm * CartesianIndex(ind) === CartesianIndex(ind_perm)
+        @test noperm * CartesianIndex(ind) === CartesianIndex(ind)
         @test (@test_deprecated permute(perm, iperm)) === iperm * perm
     end
 

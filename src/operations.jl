@@ -93,13 +93,13 @@ julia> p * CartesianIndex(36, 42, 14)
 CartesianIndex(42, 14, 36)
 ```
 """
-*(::NoPermutation, t) = t
+*(::NoPermutation, t::Tuple) = t
 
 @inline function *(::Permutation{p,N}, t::Tuple{Vararg{Any,N}}) where {N,p}
     @inbounds ntuple(i -> t[p[i]], Val(N))
 end
 
-@inline *(p, I::CartesianIndex) = CartesianIndex(p * Tuple(I))
+@inline *(p::AbstractPermutation, I::CartesianIndex) = CartesianIndex(p * Tuple(I))
 
 """
     *(p::AbstractPermutation, q::AbstractPermutation)
@@ -130,7 +130,8 @@ Permutation(1, 2, 3)
 """
 *(p::Permutation, q::Permutation) = Permutation(p * Tuple(q))
 *(::NoPermutation, q::AbstractPermutation) = q
-*(p, ::NoPermutation) = p
+*(p::AbstractPermutation, ::NoPermutation) = p
+*(p::NoPermutation, ::NoPermutation) = p
 
 """
     /(y::AbstractPermutation, x::AbstractPermutation)
