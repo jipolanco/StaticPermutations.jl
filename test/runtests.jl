@@ -78,6 +78,11 @@ using Test
         id = identity_permutation(Val(4))
         @test id === Permutation(1, 2, 3, 4)
         @test id == NoPermutation()  # they're functionally equivalent
+        idval(p) = Val(isidentity(p))
+        @test (@inferred idval(perm)) === Val(false)
+        @test (@inferred idval(noperm)) === Val(true)
+        @test (@inferred idval(id)) === Val(true)
+        @inferred idval(perm)
         @test !isidentity(perm)
         @test_deprecated is_identity_permutation(perm)
         @test isidentity(NoPermutation())
