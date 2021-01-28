@@ -36,7 +36,6 @@ using Test
 
     @testset "Permutation checks" begin
         @test isperm(perm)
-        @test_deprecated is_valid_permutation(perm)
         @test isperm(noperm)
         @test !isperm(Permutation(2, 5, 3))
 
@@ -70,7 +69,6 @@ using Test
         @test iperm * perm == NoPermutation()
         @test invperm(perm) === iperm
         @inferred inv(perm)
-        @test_deprecated inverse_permutation(perm)
     end
 
     @testset "Identity permutation" begin
@@ -84,7 +82,6 @@ using Test
         @test (@inferred idval(id)) === Val(true)
         @inferred idval(perm)
         @test !isidentity(perm)
-        @test_deprecated is_identity_permutation(perm)
         @test isidentity(NoPermutation())
         @test isidentity(id)
         @test isidentity(perm * iperm)
@@ -100,7 +97,6 @@ using Test
         @test a / np === a
         @test np / a === inv(a)
         @test np / np === np
-        @test (@test_deprecated relative_permutation(a, b)) === r
     end
 
     @testset "Comparisons" begin
@@ -116,7 +112,6 @@ using Test
     @testset "Apply permutations" begin
         ind = (20, 30, 10)
         ind_perm = (30, 10, 20)
-        @test_deprecated permute_indices(ind, noperm)
         permval(perm) = Val(perm * (:aaa, :bbb, :ccc))
         @inferred permval(perm)
         @inferred permval(iperm)
@@ -125,17 +120,13 @@ using Test
         @test ind === noperm \ ind
         @test perm * ind === ind_perm
         @test ind === perm \ ind_perm
-        @test (@test_deprecated permute(ind, perm)) === ind_perm
         @test perm * CartesianIndex(ind) === CartesianIndex(ind_perm)
         @test noperm * CartesianIndex(ind) === CartesianIndex(ind)
-        @test (@test_deprecated permute(perm, iperm)) === iperm * perm
     end
 
     @testset "Prepend / append" begin
         @inferred prepend(Permutation(2, 3, 1), Val(2))
         @inferred append(Permutation(2, 3, 1), Val(2))
-        @test_deprecated prepend_to_permutation(Permutation(2, 3, 1), Val(2))
-        @test_deprecated append_to_permutation(Permutation(2, 3, 1), Val(2))
         @test prepend(Permutation(2, 3, 1), Val(2)) === Permutation(1, 2, 4, 5, 3)
         @test prepend(NoPermutation(), Val(2)) === NoPermutation()
         @test append(Permutation(2, 3, 1), Val(2)) === Permutation(2, 3, 1, 4, 5)

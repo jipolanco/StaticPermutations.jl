@@ -295,12 +295,3 @@ function prepend(::Permutation{p}, ::Val{M}) where {p, M}
 end
 
 prepend(np::NoPermutation, ::Val) = np
-
-@deprecate is_valid_permutation isperm
-@deprecate is_identity_permutation isidentity
-@deprecate inverse_permutation inv
-@deprecate prepend_to_permutation prepend
-@deprecate append_to_permutation append
-@deprecate(relative_permutation(x, y), y / x)
-@deprecate(permute_indices(p, q), q * p)
-@deprecate(permute(p, q), q * p)
