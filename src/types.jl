@@ -26,8 +26,8 @@ Constructs a `Permutation`.
 Both are equivalent:
 
 ```julia
-p1 = Permutation(3, 4)
-p2 = Permutation((3, 4))
+p1 = Permutation(2, 3, 1)
+p2 = Permutation((2, 3, 1))
 ```
 """
 struct Permutation{p,N} <: AbstractPermutation
