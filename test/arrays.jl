@@ -37,6 +37,12 @@ end
     @assert u === PermutedDimsArray(data, Tuple(perm))
 
     v = @inferred PermutedArray(data, perm)
+    @test match(
+        r"^[\d,×]+ PermutedArray(.*) with eltype Float64",
+        summary(v),
+    ) !== nothing
+
+    sumdim(x, d) = dropdims(sum(x, dims = d), dims = d)
 
     # Check that the behaviour is the same for PermutedDimsArray and for PermutedArray.
     @testset "Type: $(nameof(typeof(x)))" for x ∈ (u, v)
@@ -48,9 +54,13 @@ end
         @test Base.unsafe_convert(Ptr{Float64}, x) === pointer(data)
         @test strides(x) === perm * strides(data)
         @test Base.elsize(typeof(x)) === Base.elsize(typeof(data))
+        # This depends on the specific permutation...
+        # It's used to test Base._mapreduce_dim
+        @test sumdim(data, 1) == sumdim(x, 3)
+        @test sum(data) == sum(x)
     end
 
-    @testset "permutedims!" for N ∈ (3, 5)
+    @testset "permutedims! (N = $N)" for N ∈ (3, 5)
         test_permutedims(Val(N))
     end
 end

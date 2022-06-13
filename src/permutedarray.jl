@@ -163,12 +163,12 @@ end
     P
 end
 
-# TODO when is this used in practice? (test this)
+# Called e.g. by sum(A)
 function Base._mapreduce_dim(f, op, init::Base._InitialValue, A::PermutedArray, dims::Colon)
     Base._mapreduce_dim(f, op, init, parent(A), dims)
 end
 
-# TODO when is this used in practice? (test this)
+# Called e.g. by sum(A; dims = 2)
 function Base.mapreducedim!(f, op, B::AbstractArray{T,N}, A::PermutedArray{T,N}) where {T,N}
     C = PermutedArray(B, inv(permutation(A))) # make the inverse permutation for the output
     Base.mapreducedim!(f, op, C, parent(A))
