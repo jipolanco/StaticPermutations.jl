@@ -154,10 +154,11 @@ end
     ip, is = axes(src, dp), axes(src, ds)
     for jo in first(ip):8:last(ip), io in first(is):8:last(is)
         for I3 in R3, I2 in R2
+            i2 = Tuple(I2)  # works around inference issue on Julia ≤ 1.7 (fixed on 1.8?)
             for j in jo:min(jo+7, last(ip))
                 for i in io:min(io+7, last(is))
                     for I1 in R1
-                        @inbounds P[I1, i, I2, j, I3] = src[I1, i, I2, j, I3]
+                        @inbounds P[I1, i, i2..., j, I3] = src[I1, i, i2..., j, I3]
                     end
                 end
             end
