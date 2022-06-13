@@ -18,8 +18,12 @@ function test_permutedims(::Val{N}) where {N}
         view(x, ntuple(d -> axes(x, d)[2:2:end], Val(N))...)
     end
 
-    # Note that these call two different permutedims implementations.
+    # Note that these call two different permutedims! implementations.
     # For contiguous output, the definition is in Julia base (multidimensional.jl)
+    # We first check for allocations.
+    # Since everything is inferred, there should be no allocations!
+    precompile(permutedims, map(typeof, (dest_contiguous, src, perm)))
+    precompile(permutedims, map(typeof, (dest_strided, src, perm)))
     @test 0 == @allocated permutedims!(dest_contiguous, src, perm)
     @test 0 == @allocated permutedims!(dest_strided, src, perm)
 
