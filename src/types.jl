@@ -31,9 +31,13 @@ p2 = Permutation((2, 3, 1))
 ```
 """
 struct Permutation{p,N} <: AbstractPermutation
-    @inline Permutation(perm::Vararg{Int}) = new{perm, length(perm)}()
+    @inline function Permutation{p,N}() where {p,N}
+        p::Dims{N}  # check compatibility
+        new{p,N}()
+    end
 end
 
+@inline Permutation(perm::Vararg{Int}) = Permutation{perm, length(perm)}()
 @inline Permutation(perm::Tuple) = Permutation(perm...)
 
 @inline Base.getindex(::Permutation{p}, ::Val{i}) where {p,i} = p[i]

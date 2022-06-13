@@ -142,4 +142,6 @@ using Test
         @test PermutedDimsArray(x, perm) === PermutedDimsArray(x, Tuple(perm))
         @test PermutedDimsArray(x, noperm) === PermutedDimsArray(x, (1, 2, 3))
     end
+
+    include("arrays.jl")
 end
