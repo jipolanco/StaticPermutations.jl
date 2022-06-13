@@ -20,8 +20,17 @@ function test_permutedims(::Val{N}) where {N}
 
     # Note that these call two different permutedims implementations.
     # For contiguous output, the definition is in Julia base (multidimensional.jl)
-    @test permutedims!(dest_contiguous, src, perm) == v
-    @test permutedims!(dest_strided, src, perm) == v
+    @test 0 == @allocated permutedims!(dest_contiguous, src, perm)
+    @test 0 == @allocated permutedims!(dest_strided, src, perm)
+
+    @test dest_contiguous == v
+    @test dest_strided == v
+
+    let x = similar(src, 2 .* size(src))
+        # This just calls copyto!
+        local dest = view(x, ntuple(d -> axes(x, d)[2:2:end], Val(N))...)
+        @test permutedims!(dest, src, identity_permutation(src)) == src
+    end
 
     nothing
 end
@@ -56,8 +65,15 @@ end
         @test Base.elsize(typeof(x)) === Base.elsize(typeof(data))
         # This depends on the specific permutation...
         # It's used to test Base._mapreduce_dim
-        @test sumdim(data, 1) == sumdim(x, 3)
-        @test sum(data) == sum(x)
+        @test sumdim(data, 1) ≈ sumdim(x, 3)
+        @test sum(data) ≈ sum(x)
+    end
+
+    @testset "copyto!" begin
+        dest = PermutedArray(similar(data, Float32), perm)
+        varr = Array(v)
+        @test copyto!(dest, varr) ≈ v
+        @test copyto!(dest, Float32.(varr)) ≈ v
     end
 
     @testset "permutedims! (N = $N)" for N ∈ (3, 5)

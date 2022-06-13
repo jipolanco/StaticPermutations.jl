@@ -92,6 +92,9 @@ function _permutedims!(dest, src::AbstractArray, perm::Permutation)
     return dest
 end
 
+# This is copied from Base. For some reason there are two separate copyto! functions.
+# I'm not sure why `checkbounds` should only be called when the element type T
+# is the same...
 function Base.copyto!(dest::PermutedArray{T,N}, src::AbstractArray{T,N}) where {T,N}
     checkbounds(dest, axes(src)...)
     _copy!(dest, src)
