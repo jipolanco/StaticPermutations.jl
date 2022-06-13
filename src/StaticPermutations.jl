@@ -1,6 +1,10 @@
 module StaticPermutations
 
-export AbstractPermutation, Permutation, NoPermutation
+export
+    AbstractPermutation,
+    Permutation,
+    NoPermutation,
+    PermutedArray
 
 export
     identity_permutation,
@@ -12,6 +16,7 @@ import Base: ==, *, /, \
 
 include("types.jl")
 include("operations.jl")
-include("arrays.jl")
+include("permuteddimsarray.jl")
+include("permutedarray.jl")
 
 end
