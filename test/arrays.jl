@@ -64,7 +64,7 @@ end
         @test typeof(similar(x)) === typeof(data)
         @test size(similar(x)) === size(x)
         @test_throws ArgumentError pointer(x, 1)
-        @test Base.unsafe_convert(Ptr{Float64}, x) === pointer(data)
+        @test Base.unsafe_convert(Ptr{Float64}, parent(x)) === pointer(data)
         @test strides(x) === perm * strides(data)
         @test Base.elsize(typeof(x)) === Base.elsize(typeof(data))
         # This depends on the specific permutation...
